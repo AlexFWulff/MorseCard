@@ -5,6 +5,8 @@ SSD1306_Mini oled;
 #define MORSE_BUTTON 1
 #define LETTER_BUTTON 2
 #define SPACE_BUTTON 3
+#define LED_ONE 8
+#define LED_TWO 7
 
 bool morseButton = false;
 bool letterButton = false;
@@ -35,6 +37,8 @@ void setup() {
   pinMode(MORSE_BUTTON, INPUT_PULLUP);
   pinMode(LETTER_BUTTON, INPUT_PULLUP);
   pinMode(SPACE_BUTTON, INPUT_PULLUP);
+  pinMode(LED_ONE, OUTPUT);
+  pinMode(LED_TWO, OUTPUT);
 
   GIMSK |= _BV(PCIE0);   // Enable Pin Change Interrupts
   PCMSK0 |= _BV(PCINT1); //Enable Morse Button
@@ -52,6 +56,7 @@ ISR(PCINT0_vect) {
     dotStarted = true;
     timeWhenClosed = millis();
     lastClosed = true;
+    digitalWrite(LED_ONE, HIGH);
   }
 
   //If the morse button is pressed but there's a graphic on the screen
@@ -64,6 +69,7 @@ ISR(PCINT0_vect) {
     dotFinished = true;
     timeWhenOpened = millis();
     lastClosed = false;
+    digitalWrite(LED_ONE, LOW);
   }
   
   if (!digitalRead(LETTER_BUTTON)) {
